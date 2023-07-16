@@ -7,7 +7,8 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Components goe here */}
+      {/* Components go here */}
+
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

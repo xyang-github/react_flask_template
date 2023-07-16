@@ -1,17 +1,17 @@
 const path = require("path");
-const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HTMLWebpackPlugin = require("html-webpack-plugin");
 const FileManagerPlugin = require("filemanager-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   entry: {
     app: "./src/Index.js",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
     publicPath: "../static",
-    filename: "index.[contenthash].js",
+    filename: "index.js",
     clean: true,
   },
   cache: false,
@@ -25,7 +25,6 @@ module.exports = {
           {
             loader: "babel-loader",
             options: {
-              plugins: [require("react-refresh/babel")],
               presets: ["@babel/preset-react"],
             },
           },
@@ -33,11 +32,11 @@ module.exports = {
       },
       {
         test: /\.(css)$/,
-        use: ["style-loader", "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.sass$/,
-        use: ["style-loader", "css-loader", "sass-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
         test: /\.(svg|png|jpg|jpeg|gif)$/,
@@ -51,7 +50,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new ReactRefreshWebpackPlugin(),
+    new MiniCssExtractPlugin({ filename: "index.css" }),
     new FileManagerPlugin({
       events: {
         onStart: {
@@ -81,6 +80,10 @@ module.exports = {
               source: "./dist/*.js",
               destination: "../backend/app/static/",
             },
+            {
+              source: "./dist/*.css",
+              destination: "../backend/app/static/",
+            },
           ],
         },
       },
@@ -91,20 +94,4 @@ module.exports = {
       filename: "index.html",
     }),
   ],
-  devServer: {
-    hot: true,
-    port: 4000,
-    proxy: {
-      "/": {
-        target: "http://localhost:3000",
-      },
-      "/websocket": {
-        target: "ws://localhost:3000",
-      },
-      "/autoreload": {
-        target: "ws://localhost:3000",
-        ws: true,
-      },
-    },
-  },
 };
