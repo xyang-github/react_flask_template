@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_caching import Cache
 from config import *
 
 # Import blueprints
@@ -16,6 +17,9 @@ def create_app(config_name):
         application: the application instance
     """
     app = Flask(__name__)
+
+    # Allow server caching
+    cache = Cache(app)
 
     # Load application configuration
     app.config.from_object(config[config_name])
